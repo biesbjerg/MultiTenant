@@ -84,18 +84,9 @@ class MultiTenantBehavior extends ModelBehavior {
  * @return array Returns the modified query
  */
 	public function beforeFind(Model $Model, $query) {
-		if ($Model->alias === 'PaymentMethod') {
-			pr('BEFORE');
-			pr($query);
-		}
-
 		$conditions = $this->scope($Model);
 		foreach ($conditions as $key => $value) {
 			$query = $this->_addCondition($Model, $query, $key, $value);
-		}
-		if ($Model->alias === 'PaymentMethod') {
-			pr('AFTER');
-			pr($query);
 		}
 		return $query;
 	}
