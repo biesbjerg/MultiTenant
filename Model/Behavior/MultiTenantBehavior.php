@@ -159,10 +159,12 @@ class MultiTenantBehavior extends ModelBehavior {
 			}
 		}
 
-		if ($value !== false) {
-			$query['conditions'][$alias . '.' . $field] = $value;
+		// Don't add conditions to query when the value is false
+		if ($value === false) {
+			return $query;
 		}
 
+		$query['conditions'][$alias . '.' . $field] = $value;
 		if ($Model->Behaviors->loaded('Containable') && $alias !== $Model->alias) {
 			$query = $this->_addContainment($Model, $query, $alias);
 		}
