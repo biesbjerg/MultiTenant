@@ -37,7 +37,7 @@ class MultiTenantBehavior extends ModelBehavior {
 
 		$scope = array();
 		foreach ($this->settings[$Model->alias]['scope'] as $key => $value) {
-			list($alias, $field) = $this->_splitKey($Model, $key);
+			list($alias, $field) = $this->_split($Model, $key);
 			if ($alias === $Model->alias) {
 				if (!$Model->hasField($field)) {
 					continue;
@@ -135,7 +135,7 @@ class MultiTenantBehavior extends ModelBehavior {
 			return $query;
 		}
 
-		list($alias, $field) = $this->_splitKey($Model, $key);
+		list($alias, $field) = $this->_split($Model, $key);
 
 		// Check if condition is already present in $query
 		$needles = array($key, $field);
@@ -194,25 +194,24 @@ class MultiTenantBehavior extends ModelBehavior {
  * @return string $value Value for data key
  */
 	protected function _addData(Model $Model, $data, $key, $value) {
-		list($alias, $field) = $this->_splitKey($Model, $key);
-		if (array_key_exists($alias, $data) && array_key_exists($field, $data[$alias])) {
-			if ($data[$alias][$field] === false) {
-				unset($data[$alias][$field]);
-			}
-			return $data;
+		list($alias, $field) = $this->_split($Model, $key);
+		if (!isset($data[$alias][$field])) {
+			$data[$alias][$field] = $value;
 		}
-		$data[$alias][$field] = $value;
+		if ($data[$alias][$field] === false) {
+			unset($data[$alias][$field]);
+		}
 		return $data;
 	}
 
 /**
- * Splits key
+ * Splits field
  *
  * @param Model $Model instance of model
  * @param string $key A query key. E.g. Model.field
  * @return array The split query key. E.g. array('Model', 'field')
  */
-	protected function _splitKey(Model $Model, $key) {
+	protected function _split(Model $Model, $key) {
 		list($alias, $field) = pluginSplit($key);
 		if (!$alias) {
 			$alias = $Model->alias;
