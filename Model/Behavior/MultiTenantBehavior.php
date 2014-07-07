@@ -19,7 +19,7 @@ class MultiTenantBehavior extends ModelBehavior {
  * @return void
  */
 	public function setup(Model $Model, $settings = array()) {
-		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+		$this->settings[$Model->alias] = $settings + $this->_defaultSettings;
 	}
 
 /**
