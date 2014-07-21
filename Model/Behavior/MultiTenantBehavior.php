@@ -131,8 +131,8 @@ class MultiTenantBehavior extends ModelBehavior {
  * @return string $value Value for query key
  */
 	protected function _addCondition(Model $Model, $query, $key, $value) {
-		if (!isset($query['conditions']) || !is_array($query['conditions'])) {
-			return $query;
+		if (!is_array($query['conditions'])) {
+			$query['conditions'] = (array)$query['conditions'];
 		}
 
 		list($alias, $field) = $this->_split($Model, $key);
