@@ -92,13 +92,17 @@ class MultiTenantBehavior extends ModelBehavior {
 	}
 
 /**
- * Inject scope values into insert query
+ * Set default scope values into data on create - don't alter data for updates
  *
  * @param Model $Model instance of model
  * @param array $options
  * @return boolean Always returns true
  */
 	public function beforeSave(Model $Model, $options = array()) {
+		if ($Model->id) {
+			return true;
+		}
+
 		$conditions = $this->scope($Model);
 		foreach ($conditions as $key => $value) {
 			$Model->data = $this->_addData($Model, $Model->data, $key, $value);
